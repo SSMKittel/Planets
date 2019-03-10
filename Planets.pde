@@ -5,15 +5,15 @@ Planet[] planets;
 float zoom = 1;
 boolean renderEpicycles = false;
 
-final Colour SUN_C = new Colour(255, 255, 0);
-final Colour MERCURY_C = new Colour(150, 75, 0);
-final Colour VENUS_C = new Colour(0, 255, 0);
-final Colour EARTH_C = new Colour(0, 0, 255);
-final Colour MARS_C = new Colour(255, 0, 0);
-final Colour JUPITER_C = new Colour(255, 165, 0);
-final Colour SATURN_C = new Colour(255, 253, 208);
-final Colour URANUS_C = new Colour(102, 153, 204);
-final Colour NEPTUNE_C = new Colour(0, 127, 255);
+final color SUN_C = color(255, 255, 0);
+final color MERCURY_C = color(150, 75, 0);
+final color VENUS_C = color(0, 255, 0);
+final color EARTH_C = color(0, 0, 255);
+final color MARS_C = color(255, 0, 0);
+final color JUPITER_C = color(255, 165, 0);
+final color SATURN_C = color(255, 253, 208);
+final color URANUS_C = color(102, 153, 204);
+final color NEPTUNE_C = color(0, 127, 255);
 
 void setup() {
   size(1000, 1000);
@@ -31,17 +31,6 @@ void setup() {
   planets[6] = new Planet(9.539 * DISTANCE_MODIFIER, 29.46 * PERIOD_MODIFIER, 500, new Planet(earthDist, earthPeriod), 500, SATURN_C);
   planets[7] = new Planet(19.18 * DISTANCE_MODIFIER, 84.0 * PERIOD_MODIFIER, 1000, new Planet(earthDist, earthPeriod), 1000, URANUS_C);
   planets[8] = new Planet(30.06 * DISTANCE_MODIFIER, 164.8 * PERIOD_MODIFIER, 2000, new Planet(earthDist, earthPeriod), 2000, NEPTUNE_C);
-}
-
-class Colour {
-  final int r;
-  final int g;
-  final int b;
-  Colour(int r, int g, int b) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
-  }
 }
 
 void draw() { 
@@ -80,12 +69,12 @@ void mouseWheel(MouseEvent e)
 
 class Trail
 {
-  final Colour colour;
+  final color colour;
   
   float[] trailX;
   float[] trailY;
   
-  Trail(int length, Colour colour)
+  Trail(int length, color colour)
   {
     trailX = new float[length];
     trailY = new float[length];
@@ -129,15 +118,15 @@ class Trail
   void draw()
   {
     strokeWeight(4);
-
+    
     for (int i = trailX.length - 2; i > 0; i--)
     {
-      stroke(colour.r, colour.g, colour.b, map(trailX.length - i, 0, trailX.length, 0, 255));
+      stroke(colour, map(trailX.length - i, 0, trailX.length, 0, 255));
       line(trailX[i], trailY[i], trailX[i + 1], trailY[i + 1]);
     }
-    
+
     strokeWeight(16);
-    stroke(colour.r, colour.g, colour.b, 255);
+    stroke(colour, 255);
     point(peekX(), peekY());
   }
 }
@@ -152,10 +141,10 @@ class Planet
   final Trail trailEpicycles;
     
   Planet(float r, float orbitSeconds) {
-    this(r, orbitSeconds, 1, null, 1, new Colour(0, 0, 0));
+    this(r, orbitSeconds, 1, null, 1, color(0, 0, 0));
   }
   
-  Planet(float r, float orbitSeconds, int trailLength, Planet centerPoint, int trailEpicycleLength, Colour colour) {
+  Planet(float r, float orbitSeconds, int trailLength, Planet centerPoint, int trailEpicycleLength, color colour) {
     this.r = r;
     this.trail = new Trail(trailLength, colour);
     this.trail.clear(r, 0);
