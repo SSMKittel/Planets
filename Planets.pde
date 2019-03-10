@@ -3,6 +3,7 @@ final float DISTANCE_MODIFIER = 100;
 
 Planet[] planets;
 float zoom = 1;
+boolean pause = false;
 boolean renderEpicycles = false;
 
 final color SUN_C = color(255, 255, 0);
@@ -16,14 +17,15 @@ final color URANUS_C = color(102, 153, 204);
 final color NEPTUNE_C = color(0, 127, 255);
 
 void setup() {
-  size(1000, 1000);
+  size(1000, 1000, P3D); // P2D looks nicer but has some severe performance issues on this simulation
+  smooth(4);
   
   float earthDist = 1 * DISTANCE_MODIFIER;
   float earthPeriod = 1 * PERIOD_MODIFIER;
 
   planets = new Planet[9];
   planets[0] = new Planet(0 * DISTANCE_MODIFIER, 0 * PERIOD_MODIFIER, 1, new Planet(earthDist, earthPeriod), 30, SUN_C);
-  planets[1] = new Planet(0.39 * DISTANCE_MODIFIER, 0.240846 * PERIOD_MODIFIER, 30, new Planet(earthDist, earthPeriod), 60, MERCURY_C);
+  planets[1] = new Planet(0.39 * DISTANCE_MODIFIER, 0.240846 * PERIOD_MODIFIER, 25, new Planet(earthDist, earthPeriod), 60, MERCURY_C);
   planets[2] = new Planet(0.723 * DISTANCE_MODIFIER, 0.615 * PERIOD_MODIFIER, 60, new Planet(earthDist, earthPeriod), 90, VENUS_C);
   planets[3] = new Planet(earthDist, earthPeriod, 90, null, 1, EARTH_C);
   planets[4] = new Planet(1.524 * DISTANCE_MODIFIER, 1.881 * PERIOD_MODIFIER, 120, new Planet(earthDist, earthPeriod), 120, MARS_C);
@@ -37,12 +39,19 @@ void draw() {
   background(0);
   translate (width / 2, height / 2);
   scale(zoom);
+  
+  if (!pause)
+  {
+    for (int i = 0; i < planets.length; i++)
+    {
+      planets[i].next();
+    }
+  }
 
   if (renderEpicycles)
   {
     for (int i = 0; i < planets.length; i++)
     {
-      planets[i].next();
       planets[i].drawEpicycles();
     }
   }
@@ -50,7 +59,6 @@ void draw() {
   {
     for (int i = 0; i < planets.length; i++)
     {
-      planets[i].next();
       planets[i].draw();
     }
   }
@@ -65,6 +73,14 @@ void mouseWheel(MouseEvent e)
 {
   int scroll = e.getCount();
   zoom = constrain(zoom - 0.1 * scroll, 0.1, 3);
+}
+
+void keyPressed()
+{
+  if (key == ' ')
+  {
+    pause = !pause;
+  }
 }
 
 class Trail
@@ -118,12 +134,15 @@ class Trail
   void draw()
   {
     strokeWeight(4);
+    noFill();
     
-    for (int i = trailX.length - 2; i > 0; i--)
+    beginShape();
+    for (int i = trailX.length - 1; i > 0; i--)
     {
       stroke(colour, map(trailX.length - i, 0, trailX.length, 0, 255));
-      line(trailX[i], trailY[i], trailX[i + 1], trailY[i + 1]);
+      vertex(trailX[i], trailY[i]);
     }
+    endShape();
 
     strokeWeight(16);
     stroke(colour, 255);
