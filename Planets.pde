@@ -71,8 +71,8 @@ void mouseDragged()
 {
   if (mouseButton == LEFT)
   {
-    offsetX += mouseX - pmouseX;
-    offsetY += mouseY - pmouseY;
+    offsetX += (mouseX - pmouseX) * (1 / zoom);
+    offsetY += (mouseY - pmouseY) * (1 / zoom);
   }
 }
 
@@ -105,10 +105,10 @@ void keyPressed()
 
 class Trail
 {
-  final color colour;
+  private final color colour;
   
-  float[] trailX;
-  float[] trailY;
+  private float[] trailX;
+  private float[] trailY;
   
   Trail(int length, color colour)
   {
