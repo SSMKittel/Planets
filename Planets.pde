@@ -109,6 +109,7 @@ class Trail
   
   private float[] trailX;
   private float[] trailY;
+  private int position = 0;
   
   Trail(int length, color colour)
   {
@@ -120,20 +121,21 @@ class Trail
   void clear(float x, float y)
   {
     for (int i = 0; i < trailX.length; i++)
-    {
+    { //<>//
       trailX[i] = x;
       trailY[i] = y;
     }
+    position = 0;
   }
   
   float peekX()
   {
-    return trailX[0];
+    return trailX[position];
   }
   
   float peekY()
   {
-    return trailY[0];    
+    return trailY[position];
   }
 
   void push(float x, float y)
@@ -142,28 +144,36 @@ class Trail
     {
       return;
     }
-    for (int i = trailX.length - 1; i > 0; i--)
+    position++;
+    if (position == trailX.length)
     {
-      trailX[i] = trailX[i - 1];
-      trailY[i] = trailY[i - 1];
+      position = 0;
     }
-    trailX[0] = x;
-    trailY[0] = y;
+    trailX[position] = x;
+    trailY[position] = y;
   }
   
   void draw()
   {
     strokeWeight(4);
     noFill();
-    
+        
+    int relative = 0;
     beginShape();
-    for (int i = trailX.length - 1; i > 0; i--)
+    for (int i = position + 1; i < trailX.length; i++)
     {
-      stroke(colour, map(trailX.length - i, 0, trailX.length, 0, 255));
+      stroke(colour, map(relative, 0, trailX.length - 1, 50, 200));
       vertex(trailX[i], trailY[i]);
+      relative++;
+    }
+    for (int i = 0; i < position; i++)
+    {
+      stroke(colour, map(relative, 0, trailX.length - 1, 50, 200));
+      vertex(trailX[i], trailY[i]);
+      relative++;
     }
     endShape();
-
+    
     strokeWeight(16);
     stroke(colour, 255);
     point(peekX(), peekY());
