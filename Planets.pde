@@ -2,6 +2,8 @@ final float PERIOD_MODIFIER = 2;
 final float DISTANCE_MODIFIER = 100;
 
 Planet[] planets;
+int offsetX = 0;
+int offsetY = 0;
 float zoom = 1;
 boolean pause = false;
 boolean renderEpicycles = false;
@@ -39,7 +41,8 @@ void draw() {
   background(0);
   translate (width / 2, height / 2);
   scale(zoom);
-  
+  translate (offsetX, offsetY);
+
   if (!pause)
   {
     for (int i = 0; i < planets.length; i++)
@@ -64,9 +67,26 @@ void draw() {
   }
 }
 
+void mouseDragged()
+{
+  if (mouseButton == LEFT)
+  {
+    offsetX += mouseX - pmouseX;
+    offsetY += mouseY - pmouseY;
+  }
+}
+
 void mousePressed()
 {
-  renderEpicycles = !renderEpicycles;
+  if (mouseButton == RIGHT)
+  {
+    renderEpicycles = !renderEpicycles;
+  }
+  else if (mouseButton == CENTER)
+  {
+    offsetX = 0;
+    offsetY = 0;
+  }
 }
 
 void mouseWheel(MouseEvent e)
